@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "525492615182",
+    "firebase_url": "https://elecbill-767e5.firebaseio.com",
+    "project_id": "elecbill-767e5",
+    "storage_bucket": "elecbill-767e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525492615182:android:96d50553b427c67c",
+        "android_client_info": {
+          "package_name": "com.elecbill"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525492615182-o53ars9of7jneepfi85fs8huf9bb492h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyzRUA_z1IxmuQxRVrQYgjuxJxaLEMNso"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

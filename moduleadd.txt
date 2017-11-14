@@ -1,0 +1,6 @@
+react-native-google-sign-in
+react-native-facebook-login
+react-native-firebase-auth
+
+
+https://github.com/SolidStateGroup/react-native-firebase-auth
