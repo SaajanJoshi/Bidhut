@@ -14,7 +14,7 @@ class FBLoginView extends Component {
   constructor(props) {
     super(props);
   }
-
+  
   render() {
     return <View>
         <Icon.Button onPress={() => {
