@@ -7,7 +7,7 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel
 } from "react-native-simple-radio-button";
-import renderIf from "../pages/renderIf";
+import renderIf from "../services/renderIf";
 import SignUpTenant from "./SignUpTenant";
 
 class UserInfo extends Component {

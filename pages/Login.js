@@ -15,11 +15,14 @@ import {
 import { login, signUPP, signUP, signup } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { style } from "../style/elecStyle";
-import renderIf from "./renderIf";
+import renderIf from "../services/renderIf";
 import userInfo from "../SignUp/userInfo";
-import { facebook, google } from "../services/config.js";
 import { FBLogin, FBLoginManager } from "react-native-facebook-login";
+import {GoogleSignin, GoogleSigninButton} from 'react-native-google-sign-in';
 import FBLoginView from "../Media/FBLoginView";
+import GMLoginView from "../Media/GMLoginView";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel,} from "../Credential/facebookCre";
 
 class Login extends Component {
   constructor(props) {
@@ -82,12 +85,6 @@ class Login extends Component {
     e.preventDefault();
   }
 
-  _signinFacebook() {}
-
-  _signinGmail() {
-    firebaseApp.auth().g;
-  }
-
   render() {
     /*template for the login with the redirect with the username and password */
     let alt = this.state.route === "Login" ? "SignUp" : "Login";
@@ -112,19 +109,28 @@ class Login extends Component {
           onChangeText={text => this.setState({ password: text })}
         />
         <View style={{ margin: 7 }} />
-        <Button
-          color="#841584"
+        <Icon.Button
+          color="#000000"
+          backgroundColor={"#ffffff"}
+          size={20} borderRadius={100}
           onPress={e => this.userLoginNRegistration(e)}
           title={this.state.route}
-        />
+        >
+            {alt}
+        </Icon.Button>
         <View style={{ margin: 7 }} />
         {renderIf(
           this.state.status,
-          <Button
-            color="#841584"
+          <Icon.Button
+            color="#000000"
+            backgroundColor={"#ffffff"}
+            size={20} borderRadius={100}
             onPress={e => this.toggleRoute(e)}
             title={alt}
-          />
+          >
+             {alt}
+          </Icon.Button>
+
         )}
         <View style={{ margin: 15 }} />
         <FBLogin
@@ -135,24 +141,26 @@ class Login extends Component {
           loginBehavior={FBLoginManager.LoginBehaviors.Native}
           permissions={["email", "user_friends"]}
           onLogin={function(e) {
-            console.log(e);
+            onfbLogin(e);
           }}
           onLoginFound={function(e) {
-            console.log(e);
+            onfbLoginFound(e);
           }}
           onLoginNotFound={function(e) {
-            console.log(e);
+            onfbLoginNotFound(e);
           }}
           onLogout={function(e) {
-            console.log(e);
+            onfbLogout(e);
           }}
           onCancel={function(e) {
-            console.log(e);
+            onfbCancel(e);
           }}
           onPermissionsMissing={function(e) {
-            console.log(e);
+            onfbPermissionsMissing(e);
           }}
         />
+        <View style={{ margin: 7 }} />
+        <GMLoginView/>
       </ScrollView>
     );
   }
