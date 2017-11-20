@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import { firebaseApp } from "../services/firebase";
+import * as firebase from "firebase";
 
 const provider = '';
 
@@ -35,18 +36,17 @@ export const CredentialValues = () => {
 }
 
 export const onfbLogin = (provider) => {
-    console.log('onfblogin');
-    console.log(provider);
-    firebaseApp.auth().signInWithCredential(provider.Credentials).then(function(result){
-        console.log(result);
-       }).catch(function(error){
-         console.log(error.message);
-       })
+    let token = firebase.auth.FacebookAuthProvider.credential(provider.credentials.token);
+        firebaseApp.auth().signInWithCredential(token)
+        .then((data)=>console.log('SUCCESS', data))
+        .catch((error)=>console.log('ERROR', error));
+
 };
 
 export const onfbLoginFound = (provider) => {
-    console.log('onfbLoginFound');
-    console.log(provider);
+    
+    console.log("provider: " + JSON.stringify(provider));
+  
 };
 
 export const onfbLoginNotFound = (provider) => {

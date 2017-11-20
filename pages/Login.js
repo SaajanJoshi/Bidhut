@@ -18,13 +18,11 @@ import { style } from "../style/elecStyle";
 import renderIf from "../services/renderIf";
 import userInfo from "../SignUp/userInfo";
 import { FBLogin, FBLoginManager } from "react-native-facebook-login";
-import {GoogleSignin, GoogleSigninButton} from 'react-native-google-sign-in';
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel,CredentialValues} from "../Credential/facebookCre";
 import UUIDGenerator from "react-native-uuid-generator";
-import * as firebase from "firebase";
 
 class Login extends Component {
   constructor(props) {
@@ -87,14 +85,6 @@ class Login extends Component {
       this.setState({ status: true });
     }
     e.preventDefault();
-  }
-  signInWithCredentialFB(e){
-    console.log(e);
-     firebaseApp.auth().signInWithCredential(e.Credentials).then(function(result){
-      console.log(result);
-     }).catch(function(error){
-       console.log(error.message);
-     })
   }
 
   render() {
