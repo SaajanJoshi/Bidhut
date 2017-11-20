@@ -148,6 +148,7 @@ dependencies {
     compile "com.facebook.react:react-native:+"
     compile project(':react-native-facebook-login')
     compile project(':react-native-vector-icons')
+    compile project(':react-native-uuid-generator')
 }
 
 apply plugin: "com.google.gms.google-services" 

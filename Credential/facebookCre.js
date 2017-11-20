@@ -1,37 +1,48 @@
+import React, {Component} from 'react';
+import { connect } from "react-redux";
+import { firebaseApp } from "../services/firebase";
+
 const provider = '';
 
-this.state = {
+const state = {
     message: "",
     token: "",
     uid: "",
     type: '',
-    credentials:{
-        token:'',
-        tokenExpirationDate:'',
-        userId:'',
+    credentials: {
+        token: '',
+        tokenExpirationDate: '',
+        userId: ''
     },
-    profile:{
-        email:'',
-        first_name:'',
-        id:'',
-        last_name:'',
-        gender:'',
-        name:'',
-        picture:{
-            data:{
-                url:'',
-                is_silhouette:'',
+    profile: {
+        email: '',
+        first_name: '',
+        id: '',
+        last_name: '',
+        gender: '',
+        name: '',
+        picture: {
+            data: {
+                url: '',
+                is_silhouette: ''
             }
         },
-        verified:''    
+        verified: ''
     }
+}
+export const CredentialValues = () => {
+    return state;
 }
 
 export const onfbLogin = (provider) => {
     console.log('onfblogin');
     console.log(provider);
+    firebaseApp.auth().signInWithCredential(provider.Credentials).then(function(result){
+        console.log(result);
+       }).catch(function(error){
+         console.log(error.message);
+       })
 };
-
 
 export const onfbLoginFound = (provider) => {
     console.log('onfbLoginFound');
@@ -39,7 +50,9 @@ export const onfbLoginFound = (provider) => {
 };
 
 export const onfbLoginNotFound = (provider) => {
-    console.log('onfbLoginNotFound');
+    state.message  = provider.message;
+    state.provider = provider.provider;
+    state.type     = provider.type;
     console.log(provider);
 };
 export const onfbLogout = (provider) => {
