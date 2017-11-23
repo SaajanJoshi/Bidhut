@@ -21,7 +21,7 @@ import { FBLogin, FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel,CredentialValues} from "../Credential/facebookCre";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookCre";
 import UUIDGenerator from "react-native-uuid-generator";
 
 class Login extends Component {
@@ -31,8 +31,7 @@ class Login extends Component {
       route: "Login",
       username: "",
       password: "",
-      status: true,
-      uid:''
+      status: true
     };
   }
 
@@ -154,7 +153,6 @@ class Login extends Component {
           }}
           onLoginNotFound={function(e) {
             onfbLoginNotFound(e);
-            console.log('Value: ' + JSON.stringify(CredentialValues()));
           }}
           onLogout={function(e) {
             onfbLogout(e);
