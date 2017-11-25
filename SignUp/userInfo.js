@@ -19,6 +19,10 @@ class UserInfo extends Component {
     };
   }
 
+  static navigationOptions = {
+    header: null
+  };
+
   toggleRoute(value) {
     value === "LL"
       ? this.setState({ status: false })

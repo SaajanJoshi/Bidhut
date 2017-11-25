@@ -4,6 +4,7 @@ import { ScrollView, Text, View, Button, Alert, Image,TextInput } from "react-na
 import style from "../style/elecStyle";
 
 class SignUpTenant extends Component{
+
     render(){
         return <View style={style.mainmenuSignUpBox3}>
             <Text>{"LandLord ID:"} </Text>

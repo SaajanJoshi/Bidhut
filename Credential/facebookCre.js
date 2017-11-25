@@ -23,7 +23,7 @@ this.state = {
                 is_silhouette:'',
             }
         },
-        verified:''    
+        verified:''
     }
 }
 
