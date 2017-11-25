@@ -21,8 +21,9 @@ import { FBLogin, FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookCre";
-import UUIDGenerator from "react-native-uuid-generator";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel,} from "../Credential/facebookCre";
+import RootNavigation from '../navigation/RootNavigation';
+import Dashboard from './Dashboard';
 
 class Login extends Component {
   constructor(props) {
@@ -34,7 +35,9 @@ class Login extends Component {
       status: true
     };
   }
-
+  static navigationOptions = {
+    header: null
+  };
   userLoginNRegistration(e) {
     NetInfo.isConnected
       .fetch()
@@ -74,108 +77,118 @@ class Login extends Component {
       });
   }
 
-  toggleRoute(e) {
-    let alt = this.state.route === "Login" ? "SignUp" : "Login";
 
-    this.setState({ route: alt });
-    if (alt == "SignUp") {
-      this.setState({ status: false });
-    } else {
-      this.setState({ status: true });
-    }
-    e.preventDefault();
+  toggleRoute = () => {
+    const { navigate } = this.props.navigation;
+    navigate('UserInfo');
   }
 
   render() {
     /*template for the login with the redirect with the username and password */
     let alt = this.state.route === "Login" ? "SignUp" : "Login";
+    
     UUIDGenerator.getRandomUUID().then((uuid) => {
       console.log(uuid);
     });
 
+
+    if (this.props.isLoggedIn)
+    return <Dashboard/>;
+
     return (
-      <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
-        <Text style={{ fontSize: 27 }}>{this.state.route}</Text>
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 40, backgroundColor: "#f5f5f5" }}>
+
+        <Text style={{ fontSize: 20, textAlign: 'center', marginBottom: 30 }}>{this.state.route.toUpperCase()}</Text>
+
         <TextInput
-          placeholder="Username"
-          autoCapitalize="none"
-          autoCorrect={false}
-          autoFocus={true}
-          keyboardType="email-address"
-          value={this.state.username}
-          onChangeText={text => this.setState({ username: text })}
+        placeholder="Username"
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoFocus={true}
+        keyboardType="email-address"
+        value={this.state.username}
+        onChangeText={text => this.setState({ username: text })}
+        style = {{padding: 10}}
         />
+
         <TextInput
-          placeholder="Password"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-          value={this.state.password}
-          onChangeText={text => this.setState({ password: text })}
+        placeholder="Password"
+        autoCapitalize="none"
+        autoCorrect={false}
+        secureTextEntry={true}
+        value={this.state.password}
+        onChangeText={text => this.setState({ password: text })}
+        style = {{padding: 10}}
         />
+
+
         <View style={{ margin: 7 }} />
         <Icon.Button
-          color="#000000"
-          backgroundColor={"#ffffff"}
-          size={20} borderRadius={100}
-          onPress={e => this.userLoginNRegistration(e)}
-          title={this.state.route}
+        color="#000000"
+        backgroundColor={"#ffffff"}
+        size={20} borderRadius={100}
+        onPress={e => this.userLoginNRegistration(e)}
+        title={this.state.route}
         >
-            {this.state.route}
+        {this.state.route}
+
+
         </Icon.Button>
         <View style={{ margin: 7 }} />
         {renderIf(
           this.state.status,
           <Icon.Button
-            color="#000000"
-            backgroundColor={"#ffffff"}
-            size={20} borderRadius={100}
-            onPress={e => this.toggleRoute(e)}
-            title={alt}
+          color="#000000"
+          backgroundColor={"#ffffff"}
+          size={20} borderRadius={100}
+          onPress={() => this.toggleRoute()}
+          title={alt}
           >
-             {alt}
+          {alt}
           </Icon.Button>
 
         )}
+
+
         <View style={{ margin: 15 }} />
         <FBLogin
-          buttonView={<FBLoginView />}
-          ref={fbLogin => {
-            this.fbLogin = fbLogin;
-          }}
-          loginBehavior={FBLoginManager.LoginBehaviors.Native}
-          permissions={["email", "user_friends"]}
-          onLogin={function(e) {
-            onfbLogin(e);
-          }}
-          onLoginFound={function(e) {
-            onfbLoginFound(e);
-          }}
-          onLoginNotFound={function(e) {
-            onfbLoginNotFound(e);
-          }}
-          onLogout={function(e) {
-            onfbLogout(e);
-          }}
-          onCancel={function(e) {
-            onfbCancel(e);
-          }}
-          onPermissionsMissing={function(e) {
-            onfbPermissionsMissing(e);
-          }}
+        buttonView={<FBLoginView />}
+        ref={fbLogin => {
+          this.fbLogin = fbLogin;
+        }}
+        loginBehavior={FBLoginManager.LoginBehaviors.Native}
+        permissions={["email", "user_friends"]}
+        onLogin={function(e) {
+          onfbLogin(e);
+        }}
+        onLoginFound={function(e) {
+          onfbLoginFound(e);
+        }}
+        onLoginNotFound={function(e) {
+          onfbLoginNotFound(e);
+        }}
+        onLogout={function(e) {
+          onfbLogout(e);
+        }}
+        onCancel={function(e) {
+          onfbCancel(e);
+        }}
+        onPermissionsMissing={function(e) {
+          onfbPermissionsMissing(e);
+        }}
         />
         <View style={{ margin: 7 }} />
         <GMLoginView/>
-      </ScrollView>
+      </View>
     );
   }
-  
+
 }
 
 const mapStateToProps = (state, ownProps) => {
   console.log("mapStateLogin: " + state.auth.isLoggedIn);
   return {
-   
+
     isLoggedIn: state.auth.isLoggedIn,
     isSignedUp: state.auth.isSignedUp
   };

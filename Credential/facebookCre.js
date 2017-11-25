@@ -6,7 +6,7 @@ import * as firebase from "firebase";
 const provider = '';
 
 export const onfbLogin = (provider) => {
-    
+
     let token = firebase.auth.FacebookAuthProvider.credential(provider.credentials.token);
         firebaseApp.auth().signInWithCredential(token)
         .then((data)=>console.log('SUCCESS', data))
@@ -15,8 +15,8 @@ export const onfbLogin = (provider) => {
 };
 
 export const onfbLoginFound = (provider) => {
-    
-  
+
+
 };
 
 export const onfbLoginNotFound = (provider) => {
