@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:525492615182:android:96d50553b427c67c",
+        "mobilesdk_app_id": "1:525492615182:android:492c46460048e1ce",
         "android_client_info": {
           "package_name": "com.elecbill"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "525492615182-j42tpjuojaps5o5eqt4csn6inbsr9gd9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elecbill",
+            "certificate_hash": "3ca50343568714e12c036bad8a486637a32f314a"
+          }
+        },
         {
           "client_id": "525492615182-o53ars9of7jneepfi85fs8huf9bb492h.apps.googleusercontent.com",
           "client_type": 3
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525492615182-o53ars9of7jneepfi85fs8huf9bb492h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

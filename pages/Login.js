@@ -12,17 +12,17 @@ import {
   NetInfo,
   Dimensions
 } from "react-native";
-import { login, signUPP, signUP, signup } from "../redux/actions/auth";
+import { login,signup } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { style } from "../style/elecStyle";
 import renderIf from "../services/renderIf";
 import userInfo from "../SignUp/userInfo";
 import { FBLogin, FBLoginManager } from "react-native-facebook-login";
-import {GoogleSignin, GoogleSigninButton} from 'react-native-google-sign-in';
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel,} from "../Credential/facebookCre";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookCre";
+import UUIDGenerator from "react-native-uuid-generator";
 
 class Login extends Component {
   constructor(props) {
@@ -40,6 +40,7 @@ class Login extends Component {
       .fetch()
       .then(isConnected => {
         if (this.state.route == "Login" && isConnected) {
+          console.log('login');
           firebaseApp
             .auth()
             .signInWithEmailAndPassword(
@@ -88,6 +89,10 @@ class Login extends Component {
   render() {
     /*template for the login with the redirect with the username and password */
     let alt = this.state.route === "Login" ? "SignUp" : "Login";
+    UUIDGenerator.getRandomUUID().then((uuid) => {
+      console.log(uuid);
+    });
+
     return (
       <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
         <Text style={{ fontSize: 27 }}>{this.state.route}</Text>
@@ -116,7 +121,7 @@ class Login extends Component {
           onPress={e => this.userLoginNRegistration(e)}
           title={this.state.route}
         >
-            {alt}
+            {this.state.route}
         </Icon.Button>
         <View style={{ margin: 7 }} />
         {renderIf(
@@ -164,10 +169,13 @@ class Login extends Component {
       </ScrollView>
     );
   }
+  
 }
 
 const mapStateToProps = (state, ownProps) => {
+  console.log("mapStateLogin: " + state.auth.isLoggedIn);
   return {
+   
     isLoggedIn: state.auth.isLoggedIn,
     isSignedUp: state.auth.isSignedUp
   };
