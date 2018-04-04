@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {ScrollView, Text, View, Button , Alert,Image} from 'react-native';
+import {View, Button, Alert, Image, AsyncStorage} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
 
 class Dashboard extends Component {
-    userLogout(e) {
-        this
-            .props
-            .onLogout();
-        e.preventDefault();
+   userLogout(e) {
+        this.props.onLogout();
+        AsyncStorage.setItem('login', 'false', () => {});
+        // e.preventDefault();
     }
 
     meterpage(){

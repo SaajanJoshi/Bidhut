@@ -5,11 +5,12 @@ import style from "../style/elecStyle";
 
 class SignUpTenant extends Component{
     render(){
-        return <View style={style.mainmenuSignUpBox3}>
+        return (
+        <View style={style.mainmenuSignUpBox3}>
             <Text>{"LandLord ID:"} </Text>
             <TextInput style={style.TextInput} />
             <Button color="#841244" title={"Join"} />
-          </View>;}
+        </View>);}
 }
 
 const mapStateToProps = (state, ownProps) => {

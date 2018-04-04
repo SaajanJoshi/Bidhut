@@ -5,7 +5,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {firebaseApp} from "../services/firebase";
 import * as firebase from "firebase";
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
-import {google} from "../services/config"
 
 class GMLoginView extends Component {
 

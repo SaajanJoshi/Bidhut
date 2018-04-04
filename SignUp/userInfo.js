@@ -27,7 +27,6 @@ class UserInfo extends Component {
 
   render() {
     return <ScrollView>
-        <View>
           <View style={style.mainmenuSignUpBox1}>
             <View>
               <Text style={style.signUptypetext}>{"Select User Type"}</Text>
@@ -43,7 +42,6 @@ class UserInfo extends Component {
             </View>
           </View>
           {renderIf(this.state.status, <SignUpTenant />)}
-        </View>
       </ScrollView>;
   }
 }

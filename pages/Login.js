@@ -10,18 +10,19 @@ import {
   TouchableHighlight,
   AlertAndroid,
   NetInfo,
-  Dimensions
+  Dimensions,
+  AsyncStorage
 } from "react-native";
 import { login,signup } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { style } from "../style/elecStyle";
 import renderIf from "../services/renderIf";
 import userInfo from "../SignUp/userInfo";
-import { FBLogin, FBLoginManager } from "react-native-facebook-login";
+import { FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookCre";
+
 import UUIDGenerator from "react-native-uuid-generator";
 
 class Login extends Component {
@@ -35,12 +36,22 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    AsyncStorage.getItem("myKey").then((value) => {
+        this.setState({"myKey": value});
+    }).done();
+}
+
+
+getInitialState() {
+    return { };
+}
+
   userLoginNRegistration(e) {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
         if (this.state.route == "Login" && isConnected) {
-          console.log('login');
           firebaseApp
             .auth()
             .signInWithEmailAndPassword(
@@ -48,6 +59,7 @@ class Login extends Component {
               this.state.password
             )
             .then(user => {
+              AsyncStorage.setItem('login', 'true', () => {});
               this.props.onLogin(this.state.username, this.state.password);
             })
             .catch(function(error) {
@@ -89,10 +101,10 @@ class Login extends Component {
   render() {
     /*template for the login with the redirect with the username and password */
     let alt = this.state.route === "Login" ? "SignUp" : "Login";
-    UUIDGenerator.getRandomUUID().then((uuid) => {
-      console.log(uuid);
-    });
-
+    // UUIDGenerator.getRandomUUID().then((uuid) => {
+    //   console.log(uuid);
+    // });
+    
     return (
       <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
         <Text style={{ fontSize: 27 }}>{this.state.route}</Text>
@@ -138,32 +150,7 @@ class Login extends Component {
 
         )}
         <View style={{ margin: 15 }} />
-        <FBLogin
-          buttonView={<FBLoginView />}
-          ref={fbLogin => {
-            this.fbLogin = fbLogin;
-          }}
-          loginBehavior={FBLoginManager.LoginBehaviors.Native}
-          permissions={["email", "user_friends"]}
-          onLogin={function(e) {
-            onfbLogin(e);
-          }}
-          onLoginFound={function(e) {
-            onfbLoginFound(e);
-          }}
-          onLoginNotFound={function(e) {
-            onfbLoginNotFound(e);
-          }}
-          onLogout={function(e) {
-            onfbLogout(e);
-          }}
-          onCancel={function(e) {
-            onfbCancel(e);
-          }}
-          onPermissionsMissing={function(e) {
-            onfbPermissionsMissing(e);
-          }}
-        />
+        <FBLoginView/>
         <View style={{ margin: 7 }} />
         <GMLoginView/>
       </ScrollView>
@@ -173,7 +160,6 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log("mapStateLogin: " + state.auth.isLoggedIn);
   return {
    
     isLoggedIn: state.auth.isLoggedIn,
