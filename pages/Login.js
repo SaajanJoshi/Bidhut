@@ -23,8 +23,6 @@ import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import UUIDGenerator from "react-native-uuid-generator";
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -100,11 +98,7 @@ getInitialState() {
 
   render() {
     /*template for the login with the redirect with the username and password */
-    let alt = this.state.route === "Login" ? "SignUp" : "Login";
-    // UUIDGenerator.getRandomUUID().then((uuid) => {
-    //   console.log(uuid);
-    // });
-    
+    let alt = this.state.route === "Login" ? "SignUp" : "Login";    
     return (
       <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
         <Text style={{ fontSize: 27 }}>{this.state.route}</Text>

@@ -16,7 +16,6 @@
     "react-native-loading-spinner-overlay": "^0.5.2",
     "react-native-router-flux": "^4.0.0-beta.23",
     "react-native-simple-radio-button": "^2.7.0",
-    "react-native-uuid-generator": "^3.0.2",
     "react-native-vector-icons": "^4.4.2",
     "react-navigation": "^1.0.0-beta.19",
     "react-redux": "^5.0.6",
