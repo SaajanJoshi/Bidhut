@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-google-sign-in')
     compile project(':react-native-facebook-login')
     compile project(':react-native-vector-icons')
     compile project(':react-native-uuid-generator')
