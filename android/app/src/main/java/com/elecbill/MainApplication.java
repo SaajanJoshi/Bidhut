@@ -9,7 +9,6 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.magus.fblogin.FacebookLoginPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.reactlibrary.RNUUIDGeneratorPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
 
 
@@ -30,8 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new FacebookLoginPackage(),
           new RNGoogleSigninPackage(),
-          new VectorIconsPackage(),
-          new RNUUIDGeneratorPackage()
+          new VectorIconsPackage()
       );
     }
 
