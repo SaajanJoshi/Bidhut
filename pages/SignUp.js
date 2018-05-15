@@ -16,26 +16,21 @@ import {
 import { login,signup } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { style } from "../style/elecStyle";
-import { FBLoginManager } from "react-native-facebook-login";
-import FBLoginView from "../Media/FBLoginView";
-import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-class Login extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: "",
       password: "",
-      status: true
+      confirmpassword:""
     };
   }
 
   componentDidMount() {
-    AsyncStorage.getItem("myKey").then((value) => {
-        this.setState({"myKey": value});
-    }).done();
-}
+
+  }
 
 
 getInitialState() {
@@ -51,21 +46,17 @@ getInitialState() {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        const { navigate } = this.props.navigation;
-        console.log(this.state.route);
-        console.log(isConnected);
+          const {navigate} = this.props.navigation;
           firebaseApp
             .auth()
-            .signInWithEmailAndPassword(
+            .createUserWithEmailAndPassword(
               this.state.username,
               this.state.password
             )
             .then(user => {
-              AsyncStorage.setItem('login', 'true', () => {});
-              this.props.onLogin(this.state.username, this.state.password);
-              navigate('Dashboard', {
-                name: this.state.username
-              })
+              Alert.alert("User Registered");
+              this.props.onSignUp(this.state.username, this.state.password);
+              navigate('userInfo');
             })
             .catch(function(error) {
               Alert.alert(error.message);
@@ -76,13 +67,13 @@ getInitialState() {
       });
   }
 
-  signup(e){
-    const {navigate} = this.props.navigation;
-    navigate('SignUp');
-  }
-
-  login(e){
-      this.userLoginNRegistration(e);
+  signup(e) { 
+    if (this.state.password == this.state.confirmpassword){
+        this.userLoginNRegistration(e);
+    }
+    else{
+        Alert.alert("Password Missmatched");
+    }
   }
 
   render() {  
@@ -105,16 +96,15 @@ getInitialState() {
           value={this.state.password}
           onChangeText={text => this.setState({ password: text })}
         />
-        <View style={{ margin: 7 }} />
-        <Icon.Button
-          color="#000000"
-          backgroundColor={"#ffffff"}
-          size={20} borderRadius={100}
-          onPress={e => this.login(e)}
-          title={Login}
-        >
-            Login
-        </Icon.Button>
+          <TextInput
+          placeholder="Confirm Password"
+          autoCapitalize="none"
+          autoCorrect={false}
+          secureTextEntry={true}
+          value={this.state.confirmpassword}
+          onChangeText={text => this.setState({ confirmpassword: text })}
+        />
+
         <View style={{ margin: 7 }} />
           <Icon.Button
             color="#000000"
@@ -125,10 +115,6 @@ getInitialState() {
           >
              SignUp
           </Icon.Button>
-        <View style={{ margin: 15 }} />
-        <FBLoginView/>
-        <View style={{ margin: 7 }} />
-        <GMLoginView/>
       </ScrollView>
     );
   }
@@ -144,13 +130,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLogin: (username, password) => {
-      dispatch(login(username, password));
-    },
     onSignUp: (username, password) => {
       dispatch(signup(username, password));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -1,19 +1,33 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Button, Alert, Image, AsyncStorage} from 'react-native';
+import {View, Button, Alert, Image, AsyncStorage,BackHandler} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
 
 class Dashboard extends Component {
+
+    state = {
+        screen:"Dashboard"
+    }
    userLogout(e) {
+       const {navigate} = this.props.navigation;
         this.props.onLogout();
         AsyncStorage.setItem('login', 'false', () => {});
-        // e.preventDefault();
+        navigate('Login');
     }
 
+    componentDidMount(){
+          BackHandler.addEventListener("hardwareBackPress", () => {
+                  BackHandler.exitApp();
+          });
+    }
     meterpage(){
         Alert.alert("Under Construction");
     }
+
+     static navigationOptions = {
+        header:null
+     };
 
     render() {
         return (
@@ -23,7 +37,6 @@ class Dashboard extends Component {
                 </View>
                 <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
             </View>
-
         );
     }
 }
