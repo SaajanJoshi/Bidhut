@@ -1,35 +1,33 @@
 import React, {Component} from "react";
-import {StyleSheet, View} from "react-native";
-import PropTypes from "prop-types";
+import {StyleSheet, View, Alert} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {firebaseApp} from "../services/firebase";
-import * as firebase from "firebase";
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+import {onGmLogin} from "../Credential/googleLogin";
+import { withNavigation } from 'react-navigation';
 
 class GMLoginView extends Component {
 
   loginInGmain() {
+    const {navigate} = this.props.navigation;
+    var status;
     GoogleSignin
       .hasPlayServices({autoResolve: true})
       .then(() => {
 
         GoogleSignin
           .configure()
-          .then(() => {
-
+          .then((success) => {
             GoogleSignin
               .signIn()
               .then((user) => {
+                status = onGmLogin(user);
 
-                let token = firebase
-                  .auth
-                  .GoogleAuthProvider
-                  .credential(user.idToken, user.accessToken);
-                firebaseApp
-                  .auth()
-                  .signInWithCredential(token)
-                  .then((data) => console.log('SUCCESS', data))
-                  .catch((error) => console.log('ERROR', error));
+                if (status){
+                navigate('Dashboard')
+                }
+                else{
+                  Alert.alert('Error has occured');
+                }
               })
               .catch((error) => {
                 console.log('ERROR', error);
@@ -55,4 +53,4 @@ class GMLoginView extends Component {
     );
   }
 }
-module.exports = GMLoginView;
+export default withNavigation(GMLoginView);

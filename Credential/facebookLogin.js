@@ -1,22 +1,20 @@
 
 import { firebaseApp } from "../services/firebase";
-import { Alert,AsyncStorage } from "react-native";
+import { Alert } from "react-native";
 import * as firebase from "firebase";
 
 export const onfbLogin = (provider) => {
-    let token = firebase.auth.FacebookAuthProvider.credential(provider.credentials.token);
+    let token = firebase.auth.FacebookAuthProvider.credential(provider.credentials.token),
+        success;
+    const {navigate} = this.props.navigation;
         firebaseApp.auth().signInWithCredential(token)
-        .then((data)=> {
-            Alert.alert("User Created In firebase with facebook Credential");
-            AsyncStorage.setItem('login', 'true', () => {});
-        })
-        .catch((error)=>{return error});
+        .then((data)=> {success = true;})
+        .catch((error) => {success = false;});
+    return success
 };
 
 export const onfbLoginFound = (provider) => {
     console.log(provider);
-    
-  
 };
 
 export const onfbLoginNotFound = (provider) => {

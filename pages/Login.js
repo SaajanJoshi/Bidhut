@@ -52,8 +52,6 @@ getInitialState() {
       .fetch()
       .then(isConnected => {
         const { navigate } = this.props.navigation;
-        console.log(this.state.route);
-        console.log(isConnected);
           firebaseApp
             .auth()
             .signInWithEmailAndPassword(
