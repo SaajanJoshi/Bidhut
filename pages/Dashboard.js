@@ -3,16 +3,13 @@ import {connect} from 'react-redux';
 import {View, Button, Alert, Image, AsyncStorage,BackHandler} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
+import { loading } from "../redux/actions/auth";
 
 class Dashboard extends Component {
 
-    state = {
-        screen:"Dashboard"
-    }
    userLogout(e) {
        const {navigate} = this.props.navigation;
         this.props.onLogout();
-        AsyncStorage.setItem('login', 'false', () => {});
         navigate('Login');
     }
 
@@ -49,6 +46,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onLogout: () => {
             dispatch(logout());
+        },
+        onLoad:(load) =>{
+            dispatch(loading(load));
         }
     }
 }

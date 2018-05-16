@@ -9,3 +9,7 @@ export const logout = () => {
 export const signup = (username, password) => {
     return {type: 'SIGNUP', username: username, password: password};
 };
+
+export const loading = (load) => {
+    return {type:'LOADING',load:load};
+}

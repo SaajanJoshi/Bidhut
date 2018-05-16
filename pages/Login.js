@@ -11,15 +11,17 @@ import {
   AlertAndroid,
   NetInfo,
   Dimensions,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator,
+  StyleSheet
 } from "react-native";
 import { login,signup } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
-import { style } from "../style/elecStyle";
 import { FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {GoogleSignin} from 'react-native-google-signin';
 
 class Login extends Component {
   constructor(props) {
@@ -32,10 +34,8 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    AsyncStorage.getItem("myKey").then((value) => {
-        this.setState({"myKey": value});
-    }).done();
-}
+
+  }
 
 
 getInitialState() {
@@ -83,7 +83,14 @@ getInitialState() {
       this.userLoginNRegistration(e);
   }
 
-  render() {  
+  render() {
+    console.log(this.props.isLoad);
+    if (this.props.isLoad) {
+      return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
+        <ActivityIndicator size = "large"/>
+         </View>
+      )
+    } else if (!this.props.isLoad) {
     return (
       <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
         <TextInput
@@ -129,14 +136,15 @@ getInitialState() {
         <GMLoginView/>
       </ScrollView>
     );
-  }
-  
+  }  
+}
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
     isLoggedIn: state.auth.isLoggedIn,
-    isSignedUp: state.auth.isSignedUp
+    isSignedUp: state.auth.isSignedUp,
+    isLoad:     state.auth.isLoad
   };
 };
 

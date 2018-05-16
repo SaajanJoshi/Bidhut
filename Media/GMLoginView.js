@@ -4,6 +4,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import {onGmLogin} from "../Credential/googleLogin";
 import { withNavigation } from 'react-navigation';
+import { connect } from "react-redux";
+import { loading } from "../redux/actions/auth";
 
 class GMLoginView extends Component {
 
@@ -20,14 +22,15 @@ class GMLoginView extends Component {
             GoogleSignin
               .signIn()
               .then((user) => {
-                status = onGmLogin(user);
-
-                if (status){
-                navigate('Dashboard')
-                }
-                else{
-                  Alert.alert('Error has occured');
-                }
+                this.props.onLoad(true);
+                 status = onGmLogin(user);
+                 Promise.resolve(status).then(function (value) {
+                   if (value == true) {
+                     navigate('Dashboard');
+                   } else if (value == false) {
+                     Alert.alert('Error has occured');
+                   }
+                 })
               })
               .catch((error) => {
                 console.log('ERROR', error);
@@ -53,4 +56,22 @@ class GMLoginView extends Component {
     );
   }
 }
-export default withNavigation(GMLoginView);
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    isSignedUp: state.auth.isSignedUp,
+    isLoad: state.auth.isLoad
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoad: (load) => {
+      dispatch(loading(load));
+    }
+  };
+};
+
+export default withNavigation(connect(mapStateToProps, mapDispatchToProps)(GMLoginView));
+

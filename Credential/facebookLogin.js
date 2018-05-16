@@ -7,9 +7,10 @@ export const onfbLogin = (provider) => {
     let token = firebase.auth.FacebookAuthProvider.credential(provider.credentials.token),
         success;
     const {navigate} = this.props.navigation;
-        firebaseApp.auth().signInWithCredential(token)
-        .then((data)=> {success = true;})
-        .catch((error) => {success = false;});
+
+    success = firebaseApp.auth().signInWithCredential(token)
+              .then((data)=> {return true;})
+              .catch((error) => {return false;});
     return success;
 };
 
