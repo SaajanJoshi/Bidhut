@@ -10,7 +10,7 @@ export const onfbLogin = (provider) => {
         firebaseApp.auth().signInWithCredential(token)
         .then((data)=> {success = true;})
         .catch((error) => {success = false;});
-    return success
+    return success;
 };
 
 export const onfbLoginFound = (provider) => {
