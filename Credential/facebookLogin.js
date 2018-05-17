@@ -20,7 +20,7 @@ export const onfbLoginNotFound = (provider) => {
 };
 export const onfbLogout = (provider) => {
 
-
+    
 };
 
 export const onfbCancel = (provider) => {

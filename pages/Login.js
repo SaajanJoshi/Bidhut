@@ -41,6 +41,7 @@ class Login extends Component {
           loading = this.props;
     var success,
         values;
+  
       /*first check Google key if not available then find Facebook key if both not available then Login is displayed*/
     success =  AsyncStorage.getItem('Google').then((data) => {
                           return data;

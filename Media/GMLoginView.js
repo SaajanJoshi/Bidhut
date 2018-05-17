@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {StyleSheet, View, Alert, AsyncStorage} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+import { GoogleSignin } from 'react-native-google-signin';
 import {onGmLogin} from "../Credential/googleLogin";
 import { withNavigation } from 'react-navigation';
 import { connect } from "react-redux";
