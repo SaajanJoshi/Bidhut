@@ -1,22 +1,34 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Button, Alert, Image, AsyncStorage,BackHandler} from 'react-native';
+import {View, Button, Alert, Image, AsyncStorage, BackHandler, ActivityIndicator} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
-import { loading } from "../redux/actions/auth";
+import { loading, screen} from "../redux/actions/auth";
 
 class Dashboard extends Component {
 
    userLogout(e) {
        const {navigate} = this.props.navigation;
         this.props.onLogout();
-        navigate('Login');
+        this.props.onLoad(true);
+        clearStorage();
+        navigate('Login',this.props.onLoad(false));
     }
 
     componentDidMount(){
-          BackHandler.addEventListener("hardwareBackPress", () => {
+          this.props.onScreen(this.props.navigation.state.routeName);
+          BackHandler.addEventListener("hardwareBackPress", () => { /*not feasible currently working but with more screen the functionality is not per witnesss*/
                   BackHandler.exitApp();
           });
+          this.props.onLoad(this.props.navigation.state.params.loading);
+    }
+
+    componentWillmount(){
+
+    }
+
+    componentWillReceiveProps(){
+
     }
     meterpage(){
         Alert.alert("Under Construction");
@@ -27,6 +39,13 @@ class Dashboard extends Component {
      };
 
     render() {
+    var screenName = this.props.screenName;
+    if ((this.props.isLoad && screenName == 'Dashboard') || screenName != 'Dashboard') {
+      return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
+        <ActivityIndicator size = "large"/>
+         </View>
+      )
+    } else if (!this.props.isLoad && screenName == 'Dashboard') {
         return (
             <View style={style.mainmenu}>
                 <View style={style.mainmenuDashboard} onPress = {this.meterpage}>
@@ -37,9 +56,13 @@ class Dashboard extends Component {
         );
     }
 }
+}
 
 const mapStateToProps = (state, ownProps) => {
-    return {username: state.auth.username};
+    return {username: state.auth.username,
+            isLoad:state.auth.isLoad,
+           screenName: state.auth.screenName
+         };
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -49,8 +72,19 @@ const mapDispatchToProps = (dispatch) => {
         },
         onLoad:(load) =>{
             dispatch(loading(load));
+        },
+        onScreen: (screenName) => {
+            dispatch(screen(screenName));
         }
     }
 }
+
+ const clearStorage = async () => {
+     try {
+         await AsyncStorage.clear();
+     } catch (error) {
+         console.log(error);
+     }
+ }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

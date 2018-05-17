@@ -13,3 +13,7 @@ export const signup = (username, password) => {
 export const loading = (load) => {
     return {type:'LOADING',load:load};
 }
+
+export const screen = (screenName) => {
+    return {type:'SCREEN',screen:screenName};
+}

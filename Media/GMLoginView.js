@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {StyleSheet, View, Alert} from "react-native";
+import {StyleSheet, View, Alert, AsyncStorage} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import {onGmLogin} from "../Credential/googleLogin";
@@ -10,7 +10,8 @@ import { loading } from "../redux/actions/auth";
 class GMLoginView extends Component {
 
   loginInGmain() {
-    const {navigate} = this.props.navigation;
+    const {navigate} = this.props.navigation,
+          loading = this.props;
     var status;
     GoogleSignin
       .hasPlayServices({autoResolve: true})
@@ -22,13 +23,15 @@ class GMLoginView extends Component {
             GoogleSignin
               .signIn()
               .then((user) => {
-                this.props.onLoad(true);
+                loading.onLoad(true);
                  status = onGmLogin(user);
                  Promise.resolve(status).then(function (value) {
-                   if (value == true) {
-                     navigate('Dashboard');
-                   } else if (value == false) {
+                  AsyncStorage.setItem('Google', JSON.stringify(user));
+                   if (value != null) {
+                     navigate('Dashboard',{loading:false});
+                   } else if (value == null) {
                      Alert.alert('Error has occured');
+                     loading.onLoad(false);
                    }
                  })
               })

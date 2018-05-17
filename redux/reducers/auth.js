@@ -3,7 +3,8 @@ const defaultState = {
     isloggedOut:false,
     username: '',
     password: '',
-    isLoad:false,
+    isLoad:true,
+    screenName:'Login',
     isSignedUp : false
 };
  
@@ -32,6 +33,10 @@ export default function reducer(state = defaultState, action) {
             return Object.assign({}, state, {
                 isLoad: action.load
             });
+        case 'SCREEN':
+             return Object.assign({}, state, {
+                 screenName: action.screen
+             });
         break;    
         default:
             return state;

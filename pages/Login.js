@@ -15,13 +15,14 @@ import {
   ActivityIndicator,
   StyleSheet
 } from "react-native";
-import { login,signup } from "../redux/actions/auth";
+import { login,signup,loading,screen } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin} from 'react-native-google-signin';
+import {onGmLogin} from "../Credential/googleLogin";
 
 class Login extends Component {
   constructor(props) {
@@ -34,7 +35,45 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    this.props.onScreen(this.props.navigation.state.routeName);
+    const {navigate} = this.props.navigation,
+          loading = this.props;
+    var success;
+      /*first check Google key if not available then find Facebook key if both not available then Login is displayed*/
+    success =  AsyncStorage.getItem('Google').then((data) => {
+                          return data;
+                      }).then((error) => {
+                          return error;
+                      })
 
+     Promise.resolve(success).then(function(value){
+        if (value != null){
+           success = onGmLogin(JSON.parse(value));
+           Promise.resolve(success).then(function (value) {
+               if (value != null) {
+                 loading.onScreen('Dashboard');
+                 navigate('Dashboard',{loading:false});
+               } else if (value == null) {
+                 loading.onLoad(false);
+               }
+          });
+        }
+        else if (value == null){
+             success = AsyncStorage.getItem('Facebook').then((data) => {
+               return data;
+             }).then((error) => {
+               return error;
+             })
+             Promise.resolve(success).then(function (value) {
+               if (value != null) {
+                 loading.onScreen('Dashboard');
+                 navigate('Dashboard', { loading: false });
+               } else if (value == null) {
+                 loading.onLoad(false);
+               }
+             });
+;        }
+     });
   }
 
 
@@ -59,7 +98,6 @@ getInitialState() {
               this.state.password
             )
             .then(user => {
-              AsyncStorage.setItem('login', 'true', () => {});
               this.props.onLogin(this.state.username, this.state.password);
               navigate('Dashboard', {
                 name: this.state.username
@@ -84,13 +122,13 @@ getInitialState() {
   }
 
   render() {
-    console.log(this.props.isLoad);
-    if (this.props.isLoad) {
+    var screenName = this.props.screenName;
+    if ((this.props.isLoad && screenName == 'Login') || screenName != 'Login') {
       return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
         <ActivityIndicator size = "large"/>
          </View>
       )
-    } else if (!this.props.isLoad) {
+    } else if (!this.props.isLoad && screenName == 'Login') {
     return (
       <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "skyblue" }}>
         <TextInput
@@ -144,7 +182,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isLoggedIn: state.auth.isLoggedIn,
     isSignedUp: state.auth.isSignedUp,
-    isLoad:     state.auth.isLoad
+    isLoad:     state.auth.isLoad,
+    screenName: state.auth.screenName
   };
 };
 
@@ -155,6 +194,12 @@ const mapDispatchToProps = dispatch => {
     },
     onSignUp: (username, password) => {
       dispatch(signup(username, password));
+    },
+    onLoad: (load) => {
+      dispatch(loading(load));
+    },
+    onScreen:(screenName) => {
+      dispatch(screen(screenName));
     }
   };
 };
