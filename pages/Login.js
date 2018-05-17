@@ -23,6 +23,7 @@ import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin} from 'react-native-google-signin';
 import {onGmLogin} from "../Credential/googleLogin";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookLogin";
 
 class Login extends Component {
   constructor(props) {
@@ -38,7 +39,8 @@ class Login extends Component {
     this.props.onScreen(this.props.navigation.state.routeName);
     const {navigate} = this.props.navigation,
           loading = this.props;
-    var success;
+    var success,
+        values;
       /*first check Google key if not available then find Facebook key if both not available then Login is displayed*/
     success =  AsyncStorage.getItem('Google').then((data) => {
                           return data;
@@ -48,7 +50,8 @@ class Login extends Component {
 
      Promise.resolve(success).then(function(value){
         if (value != null){
-           success = onGmLogin(JSON.parse(value));
+           values = JSON.parse(value);
+           success = onGmLogin(values);
            Promise.resolve(success).then(function (value) {
                if (value != null) {
                  loading.onScreen('Dashboard');
@@ -66,8 +69,16 @@ class Login extends Component {
              })
              Promise.resolve(success).then(function (value) {
                if (value != null) {
-                 loading.onScreen('Dashboard');
-                 navigate('Dashboard', { loading: false });
+                 values = JSON.parse(value);
+                 success = onfbLogin(values);
+                 Promise.resolve(success).then(function (value) {
+                   if (value != null) {
+                     loading.onScreen('Dashboard');
+                     navigate('Dashboard', {loading: false});
+                   } else if (value == null) {
+                     loading.onLoad(false);
+                   }
+                 });
                } else if (value == null) {
                  loading.onLoad(false);
                }
@@ -99,9 +110,7 @@ getInitialState() {
             )
             .then(user => {
               this.props.onLogin(this.state.username, this.state.password);
-              navigate('Dashboard', {
-                name: this.state.username
-              })
+              navigate('Dashboard', {name: this.state.username,loading:false})
             })
             .catch(function(error) {
               Alert.alert(error.message);
