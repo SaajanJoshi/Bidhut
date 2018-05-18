@@ -17,3 +17,7 @@ export const loading = (load) => {
 export const screen = (screenName) => {
     return {type:'SCREEN',screen:screenName};
 }
+
+export const docRefId = (refId) =>{
+    return {type : 'DOCREFID',docRefId:refId};
+}

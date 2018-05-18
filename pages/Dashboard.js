@@ -4,8 +4,8 @@ import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator}
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
 import { loading, screen} from "../redux/actions/auth";
-import {onGmLogout} from "../Credential/googleLogin";
-import {onfbLogout} from "../Credential/facebookLogin";
+import {onGmLogout} from "../dbConnection/googleLogin";
+import {onfbLogout} from "../dbConnection/facebookLogin";
 class Dashboard extends Component {
 
    userLogout(e) {

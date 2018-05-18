@@ -4,6 +4,7 @@ const defaultState = {
     username: '',
     password: '',
     isLoad:true,
+    docRefId:'',
     screenName:'Login',
     isSignedUp : false
 };
@@ -36,6 +37,10 @@ export default function reducer(state = defaultState, action) {
         case 'SCREEN':
              return Object.assign({}, state, {
                  screenName: action.screen
+             });
+         case 'DOCREFID':
+             return Object.assign({}, state, {
+                 docRefId: action.docRefId
              });
         break;    
         default:

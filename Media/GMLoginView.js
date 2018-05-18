@@ -1,11 +1,18 @@
 import React, {Component} from "react";
-import {StyleSheet, View, Alert, AsyncStorage} from "react-native";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  AsyncStorage,
+  NetInfo
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { GoogleSignin } from 'react-native-google-signin';
-import {onGmLogin} from "../Credential/googleLogin";
+import {onGmLogin} from "../dbConnection/googleLogin";
 import { withNavigation } from 'react-navigation';
 import { connect } from "react-redux";
-import { loading } from "../redux/actions/auth";
+import { loading , docRefId} from "../redux/actions/auth";
+import {addUser} from '../dbConnection/firebaseDb';
 
 class GMLoginView extends Component {
 
@@ -13,36 +20,50 @@ class GMLoginView extends Component {
     const {navigate} = this.props.navigation,
           loading = this.props;
     var status;
-    GoogleSignin
-      .hasPlayServices({autoResolve: true})
-      .then(() => {
-
-        GoogleSignin
-          .configure()
-          .then((success) => {
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
             GoogleSignin
-              .signIn()
-              .then((user) => {
-                loading.onLoad(true);
-                 status = onGmLogin(user);
-                 Promise.resolve(status).then(function (value) {
-                  AsyncStorage.setItem('Google', JSON.stringify(user));
-                   if (value != null) {
-                     navigate('Dashboard',{loading:false});
-                   } else if (value == null) {
-                     Alert.alert('Error has occured');
-                     loading.onLoad(false);
-                   }
-                 })
+              .hasPlayServices({
+                autoResolve: true
               })
-              .catch((error) => {
-                console.log('ERROR', error);
+              .then(() => {
+                GoogleSignin
+                  .configure()
+                  .then((success) => {
+                    GoogleSignin
+                      .signIn()
+                      .then((user) => {
+                        loading.onLoad(true);
+                        status = onGmLogin(user);
+                        Promise.resolve(status).then(function (value) {
+                          AsyncStorage.setItem('Google', JSON.stringify(user));
+                          status = addUser(user.name, user.email, user.accessToken, user.photo, 'Google'); /**add  user record to the custom db (other than authentication)*/
+                            Promise.resolve(status).then(function (values) {
+                                loading.setDocRefId(values); /**Reference ID of the user */
+                                console.log(JSON.stringify(values));
+                                if (value != null) {
+                                  navigate('Dashboard', {loading: false});
+                                } else if (value == null) {
+                                  Alert.alert('Error has occured');
+                                  loading.onLoad(false);
+                                }
+                            });
+                        })
+                      })
+                      .catch((error) => {
+                        console.log('ERROR', error);
+                      })
+                  });
               })
-          });
-      })
-      .catch((err) => {
-        console.log("Play services error", err.code, err.message);
-      })
+              .catch((err) => {
+                console.log("Play services error", err.code, err.message);
+              })
+      }).catch(function(error){
+          loading.onLoad(false);
+          Alert.alert('Internet Connection not available');
+      });
+
   }
 
   render() {
@@ -64,7 +85,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isLoggedIn: state.auth.isLoggedIn,
     isSignedUp: state.auth.isSignedUp,
-    isLoad: state.auth.isLoad
+    isLoad: state.auth.isLoad,
+    getDocRefId: state.auth.docRefId
   };
 };
 
@@ -72,6 +94,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onLoad: (load) => {
       dispatch(loading(load));
+    },
+    setDocRefId: (DocRefId) =>{
+      dispatch(docRefId(DocRefId))
     }
   };
 };

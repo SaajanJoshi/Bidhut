@@ -6,7 +6,7 @@ import {Alert} from 'react-native'
 export const onGmLogin = (provider) => {
      let token = firebase.auth.GoogleAuthProvider.credential(provider.idToken, provider.accessToken),
          success;
-    success = firebaseApp.auth().signInWithCredential(token)
+    success = firebaseApp.auth().signInAndRetrieveDataWithCredential(token)
          .then((data) => {
              return data;
          })

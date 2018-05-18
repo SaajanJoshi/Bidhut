@@ -22,8 +22,9 @@ import FBLoginView from "../Media/FBLoginView";
 import GMLoginView from "../Media/GMLoginView";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin} from 'react-native-google-signin';
-import {onGmLogin} from "../Credential/googleLogin";
-import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../Credential/facebookLogin";
+import {onGmLogin} from "../dbConnection/googleLogin";
+import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../dbConnection/facebookLogin";
+import {user} from '../dbConnection/firebaseDb';
 
 class Login extends Component {
   constructor(props) {
@@ -39,9 +40,7 @@ class Login extends Component {
     this.props.onScreen(this.props.navigation.state.routeName);
     const {navigate} = this.props.navigation,
           loading = this.props;
-    var success,
-        values;
-  
+    var success,values;
       /*first check Google key if not available then find Facebook key if both not available then Login is displayed*/
     success =  AsyncStorage.getItem('Google').then((data) => {
                           return data;
