@@ -19,7 +19,7 @@ class Dashboard extends Component {
 
     componentDidMount(){
           this.props.onScreen(this.props.navigation.state.routeName);
-          BackHandler.addEventListener("hardwareBackPress", () => { /*not feasible currently working but with more screen the functionality is not per witnesss*/
+          BackHandler.addEventListener("hardwareBackPress", () => { /*not feasible currently working but with more screen the functionality is not per witness*/
                   BackHandler.exitApp();
           });
           this.props.onLoad(this.props.navigation.state.params.loading);
