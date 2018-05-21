@@ -92,7 +92,6 @@ class Login extends Component {
                  profile = JSON.parse(values.profile);
                  success = onfbLogin(values);
                  Promise.resolve(success).then(function (value) {
-                   console.log(profile);
                    success = checkUser(profile.email, 'Facebook'); /**add  user record to the custom db (other than authentication)*/
                    Promise.resolve(success).then(function (values) {
                      if (values.length > 1) {

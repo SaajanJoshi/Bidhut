@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator} from 'react-native';
+import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator,TouchableHighlight} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
-import { loading, screen} from "../redux/actions/auth";
+import { loading, screen,docRefId} from "../redux/actions/auth";
 import {onGmLogout} from "../dbConnection/googleLogin";
 import {onfbLogout} from "../dbConnection/facebookLogin";
 class Dashboard extends Component {
@@ -32,7 +32,9 @@ class Dashboard extends Component {
     componentWillReceiveProps(){
 
     }
-   
+   _onPressButton(){
+       Alert-alert('User Ref Id: ' + this.props.getDocRefId);
+   }
      static navigationOptions = {
         header:null
      };
@@ -48,8 +50,10 @@ class Dashboard extends Component {
         return (
             <View style={style.mainmenu}>
                 <View style={style.mainmenuDashboard}>
-                       <Image source={require('../assets/elecmeter.png')} style={style.image} />
+                    <Image source={require('../assets/elecmeter.png')} style={style.image} />
                 </View>
+                <Button onPress={(e) => this._onPressButton()} title="Doc Ref"/>
+                 <View style={{ margin: 7 }} />
                 <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
             </View>
         );
@@ -60,7 +64,8 @@ class Dashboard extends Component {
 const mapStateToProps = (state, ownProps) => {
     return {username: state.auth.username,
             isLoad:state.auth.isLoad,
-           screenName: state.auth.screenName
+            screenName: state.auth.screenName,
+            getDocRefId: state.auth.docRefId
          };
 }
 
