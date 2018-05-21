@@ -12,14 +12,14 @@ import {onGmLogin} from "../dbConnection/googleLogin";
 import { withNavigation } from 'react-navigation';
 import { connect } from "react-redux";
 import { loading , docRefId} from "../redux/actions/auth";
-import {addUser} from '../dbConnection/firebaseDb';
+import {checkUser,addUser} from '../dbConnection/firebaseDb';
 
 class GMLoginView extends Component {
 
   loginInGmain() {
     const {navigate} = this.props.navigation,
           loading = this.props;
-    var status;
+    var status,userRefId;
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
@@ -38,16 +38,32 @@ class GMLoginView extends Component {
                         status = onGmLogin(user);
                         Promise.resolve(status).then(function (value) {
                           AsyncStorage.setItem('Google', JSON.stringify(user));
-                          status = addUser(user.name, user.email, user.accessToken, user.photo, 'Google'); /**add  user record to the custom db (other than authentication)*/
+                          status = checkUser(user.email,'Google'); /**add  user record to the custom db (other than authentication)*/
                             Promise.resolve(status).then(function (values) {
-                                loading.setDocRefId(values); /**Reference ID of the user */
-                                console.log(JSON.stringify(values));
-                                if (value != null) {
-                                  navigate('Dashboard', {loading: false});
-                                } else if (value == null) {
-                                  Alert.alert('Error has occured');
-                                  loading.onLoad(false);
-                                }
+                                if (values.length > 1) {
+                                  if (value != null) {
+                                    userRefId =  values[values.length -1].userid;
+                                    loading.setDocRefId(userRefId);
+                                    navigate('Dashboard', {loading: false});
+                                  } else if (value == null) {
+                                    Alert.alert('Error has occured');
+                                    loading.onLoad(false);
+                                  }
+                                } else {
+                                  status = addUser(user.name, user.email, user.accessToken, user.photo, 'Google');
+                                  Promise.resolve(status).then(function (values) { /**returns ref id */
+                                      if (values != null){
+                                         userRefId = values;
+                                         loading.setDocRefId(userRefId);
+                                          navigate('Dashboard', {
+                                            loading: false
+                                          });
+                                      } else if (values == null) {
+                                        Alert.alert('Error has occured');
+                                        loading.onLoad(false);
+                                      }
+                                  });
+                                }   
                             });
                         })
                       })

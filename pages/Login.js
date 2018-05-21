@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from "react-native";
-import { login,signup,loading,screen } from "../redux/actions/auth";
+import { login,signup,loading,screen,docRefId } from "../redux/actions/auth";
 import { firebaseApp } from "../services/firebase";
 import { FBLoginManager } from "react-native-facebook-login";
 import FBLoginView from "../Media/FBLoginView";
@@ -24,7 +24,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {GoogleSignin} from 'react-native-google-signin';
 import {onGmLogin} from "../dbConnection/googleLogin";
 import {onfbLogin,onfbLoginFound,onfbLoginNotFound,onfbLogout,onfbCancel} from "../dbConnection/facebookLogin";
-import {user} from '../dbConnection/firebaseDb';
+import { addUser,checkUser } from '../dbConnection/firebaseDb';
 
 class Login extends Component {
   constructor(props) {
@@ -34,13 +34,23 @@ class Login extends Component {
       password: "",
       status: true
     };
+    var firestore = firebaseApp.firestore(),
+      settings = { /* your settings... */
+        timestampsInSnapshots: true
+      };
+
+    firestore.settings(settings);
+  
+    if (firestore._firestoreClient == undefined) {
+      firestore.enablePersistence()
+    }
   }
 
   componentDidMount() {
     this.props.onScreen(this.props.navigation.state.routeName);
     const {navigate} = this.props.navigation,
           loading = this.props;
-    var success,values;
+    var success,values,profile;
       /*first check Google key if not available then find Facebook key if both not available then Login is displayed*/
     success =  AsyncStorage.getItem('Google').then((data) => {
                           return data;
@@ -52,14 +62,23 @@ class Login extends Component {
         if (value != null){
            values = JSON.parse(value);
            success = onGmLogin(values);
-           Promise.resolve(success).then(function (value) {
-               if (value != null) {
-                 loading.onScreen('Dashboard');
-                 navigate('Dashboard',{loading:false});
-               } else if (value == null) {
-                 loading.onLoad(false);
+           Promise.resolve(status).then(function (value) {
+             status = checkUser(values.email, 'Google'); /**add  user record to the custom db (other than authentication)*/
+             Promise.resolve(status).then(function (values) {
+               if (values.length > 1) {
+                 if (value != null) {
+                   userRefId = values[values.length - 1].userid;
+                   loading.setDocRefId(userRefId);
+                   navigate('Dashboard', {
+                     loading: false
+                   });
+                 } else if (value == null) {
+                   Alert.alert('Error has occured');
+                   loading.onLoad(false);
+                 }
                }
-          });
+             });
+           })
         }
         else if (value == null){
              success = AsyncStorage.getItem('Facebook').then((data) => {
@@ -70,23 +89,33 @@ class Login extends Component {
              Promise.resolve(success).then(function (value) {
                if (value != null) {
                  values = JSON.parse(value);
+                 profile = JSON.parse(values.profile);
                  success = onfbLogin(values);
                  Promise.resolve(success).then(function (value) {
-                   if (value != null) {
-                     loading.onScreen('Dashboard');
-                     navigate('Dashboard', {loading: false});
-                   } else if (value == null) {
-                     loading.onLoad(false);
-                   }
-                 });
-               } else if (value == null) {
-                 loading.onLoad(false);
-               }
-             });
-;        }
-     });
-  }
-
+                   console.log(profile);
+                   success = checkUser(profile.email, 'Facebook'); /**add  user record to the custom db (other than authentication)*/
+                   Promise.resolve(success).then(function (values) {
+                     if (values.length > 1) {
+                       if (value != null) {
+                         userRefId = values[values.length - 1].userid;
+                         loading.setDocRefId(userRefId);
+                         navigate('Dashboard', {
+                           loading: false
+                         });
+                       } else if (value == null) {
+                         Alert.alert('Error has occured');
+                         loading.onLoad(false);
+                       }
+                     }
+                   });
+                 })
+                } else if (value == null) {
+                  loading.onLoad(false);
+                }
+              })
+            } 
+          });
+;       }
 
 getInitialState() {
     return { };
@@ -192,7 +221,8 @@ const mapStateToProps = (state, ownProps) => {
     isLoggedIn: state.auth.isLoggedIn,
     isSignedUp: state.auth.isSignedUp,
     isLoad:     state.auth.isLoad,
-    screenName: state.auth.screenName
+    screenName: state.auth.screenName,
+    getDocRefId: state.auth.docRefId
   };
 };
 
@@ -209,6 +239,9 @@ const mapDispatchToProps = dispatch => {
     },
     onScreen:(screenName) => {
       dispatch(screen(screenName));
+    },
+    setDocRefId: (DocRefId) => {
+      dispatch(docRefId(DocRefId))
     }
   };
 };
