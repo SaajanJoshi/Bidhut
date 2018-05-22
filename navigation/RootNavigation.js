@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import SignUp  from '../pages/SignUp';
 import SignUpTenant from '../SignUp/SignUpTenant';
 import userInfo from '../SignUp/userInfo';
+import Calculator from '../pages/Calculator'
 import { StackNavigator } from 'react-navigation';
 
 const RootNavigation = StackNavigator({
@@ -13,7 +14,8 @@ const RootNavigation = StackNavigator({
   Dashboard: {screen: Dashboard },
   SignUp:{screen: SignUp},
   userInfo:{screen:userInfo},
-  SignUpTenant:{screen:SignUpTenant}
+  SignUpTenant:{screen:SignUpTenant},
+  Calculator:{screen:Calculator},
 },
   {
     navigationOptions: {

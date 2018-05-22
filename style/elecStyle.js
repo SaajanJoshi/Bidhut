@@ -7,11 +7,13 @@ export default StyleSheet.create({
   mainmenu: {
     backgroundColor: "skyblue",
     borderRadius: 5,
-    padding: 15
+    padding: 15,
+    height: screenHeight
   },
   mainmenuDashboard: {
     height: 150,
-    width: screenWidth
+    width: screenWidth,
+    backgroundColor: "orange"
   },
   image: {
     flex: 1,
@@ -76,6 +78,11 @@ export default StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center"
+  },
+  childCard:{
+    backgroundColor: "coral",
+    height: 150,
+    width: screenWidth
   }
 });
 

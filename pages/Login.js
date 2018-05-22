@@ -34,17 +34,8 @@ class Login extends Component {
       password: "",
       status: true
     };
-    var firestore = firebaseApp.firestore(),
-      settings = { /* your settings... */
-        timestampsInSnapshots: true
-      };
-
-    firestore.settings(settings);
-  
-    if (firestore._firestoreClient == undefined) {
-      firestore.enablePersistence()
-    }
-  }
+    enableDbPersistence(); /*enable persistance for the firestorm cloud*/
+}
 
   componentDidMount() {
     this.props.onScreen(this.props.navigation.state.routeName);
@@ -62,22 +53,23 @@ class Login extends Component {
         if (value != null){
            values = JSON.parse(value);
            success = onGmLogin(values);
-           Promise.resolve(status).then(function (value) {
-             status = checkUser(values.email, 'Google'); /**add  user record to the custom db (other than authentication)*/
-             Promise.resolve(status).then(function (values) {
-               if (values.length > 1) {
-                 if (value != null) {
+          Promise.resolve(success).then(function (value) {
+            if (value != null){
+            success = checkUser(values.email, 'Google'); /**add  user record to the custom db (other than authentication)*/
+            Promise.resolve(success).then(function (values) {
                    userRefId = values[values.length - 1].userid;
                    loading.setDocRefId(userRefId);
                    navigate('Dashboard', {
                      loading: false
                    });
-                 } else if (value == null) {
-                   Alert.alert('Error has occured');
-                   loading.onLoad(false);
-                 }
-               }
-             });
+             })
+             .catch(function (error) {
+               Alert.alert('rejected');
+               loading.onLoad(false);
+             })
+            } else {
+              loading.onLoad(false);
+            }
            })
         }
         else if (value == null){
@@ -92,29 +84,34 @@ class Login extends Component {
                  profile = JSON.parse(values.profile);
                  success = onfbLogin(values);
                  Promise.resolve(success).then(function (value) {
+                   if (value != null){
                    success = checkUser(profile.email, 'Facebook'); /**add  user record to the custom db (other than authentication)*/
                    Promise.resolve(success).then(function (values) {
-                     if (values.length > 1) {
-                       if (value != null) {
                          userRefId = values[values.length - 1].userid;
                          loading.setDocRefId(userRefId);
                          navigate('Dashboard', {
                            loading: false
                          });
-                       } else if (value == null) {
-                         Alert.alert('Error has occured');
-                         loading.onLoad(false);
-                       }
-                     }
-                   });
+                   })
+                   .catch(function (error) {
+                     Alert.alert('rejected');
+                     loading.onLoad(false);
+                   })
+                  } else {
+                    loading.onLoad(false);
+                  }
                  })
-                } else if (value == null) {
+                } else {
                   loading.onLoad(false);
                 }
               })
             } 
-          });
-;       }
+          })
+        .catch(function(err){
+          Alert.alert(error.message);
+          loading.onLoad(false);
+        });
+  }
 
 getInitialState() {
     return { };
@@ -214,6 +211,17 @@ getInitialState() {
   }  
 }
 }
+function enableDbPersistence() {
+    var firestore = firebaseApp.firestore(),
+      settings = { /* your settings... */
+        timestampsInSnapshots: true
+      };
+
+    firestore.settings(settings);
+    if (firestore._firestoreClient == undefined) {
+      firestore.enablePersistence();
+    }
+  }
 
 const mapStateToProps = (state, ownProps) => {
   return {

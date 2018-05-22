@@ -11,3 +11,11 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+export const googleToken = (idToken,accessToken) =>{
+ return firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+}
+
+export const facebookToken = (accessToken) =>{
+  return firebase.auth.FacebookAuthProvider.credential(accessToken);
+}

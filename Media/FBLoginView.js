@@ -20,16 +20,17 @@ class FBLoginView extends Component {
     const {navigate} = this.props.navigation,
              loading = this.props;
     var status,profile;
-    loading.onLoad(true);
+
       NetInfo.isConnected
         .fetch()
         .then(isConnected => {
+          if (isConnected){
             FBLoginManager.setLoginBehavior(FBLoginManager.LoginBehaviors.Native);
             FBLoginManager.loginWithPermissions(["email", "user_friends"], function (error, data) {
               if (!error) {
+                loading.onLoad(true);
                 status = onfbLogin(data);
                 Promise.resolve(status).then(function (value) {
-
                   AsyncStorage.setItem('Facebook', JSON.stringify(data));
                   profile = JSON.parse(data.profile);
                   status = checkUser(profile.email, 'Facebook'); /**add  user record to the custom db (other than authentication)*/
@@ -41,7 +42,7 @@ class FBLoginView extends Component {
                          navigate('Dashboard', {
                            loading: false
                          });
-                       } else if (value == null) {
+                       } else {
                          Alert.alert('Error has occured');
                          loading.onLoad(false);
                        }
@@ -54,22 +55,24 @@ class FBLoginView extends Component {
                            navigate('Dashboard', {
                              loading: false
                            });
-                         } else if (values == null) {
+                         } else {
                            Alert.alert('Error has occured');
                            loading.onLoad(false);
                          }
                        });
                      }
                    });
-                })
+                });
               } else {
                 console.log("Error: ", error);
               }
-            })
-        }).catch(function(error){
-          loading.onLoad(false);
-          Alert.alert('Internet Connection not available');
-        })  
+            });
+          }
+          else {
+             Alert.alert('No Connection Available');
+             loading.onLoad(false);
+          }
+        })
   }
   render() {
     return(

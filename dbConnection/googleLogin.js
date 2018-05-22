@@ -1,10 +1,9 @@
-import { firebaseApp } from "../services/firebase";
-import * as firebase from "firebase";
+import { firebaseApp,googleToken } from "../services/firebase";
 import { GoogleSignin } from 'react-native-google-signin';
-import {Alert} from 'react-native'
+import {Alert} from 'react-native';
 
 export const onGmLogin = (provider) => {
-     let token = firebase.auth.GoogleAuthProvider.credential(provider.idToken, provider.accessToken),
+     let token = googleToken(provider.idToken, provider.accessToken),
          success;
     success = firebaseApp.auth().signInAndRetrieveDataWithCredential(token)
          .then((data) => {
@@ -35,6 +34,6 @@ export const onGmLogout = () => {
                         else{
                             state = true;
                         }
-                    })
+                    });
                 });
-}
+};

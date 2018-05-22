@@ -23,6 +23,7 @@ class GMLoginView extends Component {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
+        if (isConnected){
             GoogleSignin
               .hasPlayServices({
                 autoResolve: true
@@ -37,6 +38,7 @@ class GMLoginView extends Component {
                         loading.onLoad(true);
                         status = onGmLogin(user);
                         Promise.resolve(status).then(function (value) {
+                          if (value != null){
                           AsyncStorage.setItem('Google', JSON.stringify(user));
                           status = checkUser(user.email,'Google'); /**add  user record to the custom db (other than authentication)*/
                             Promise.resolve(status).then(function (values) {
@@ -65,21 +67,26 @@ class GMLoginView extends Component {
                                   });
                                 }   
                             });
-                        })
+                          } else {
+                              Alert.alert('Error has occured');
+                              loading.onLoad(false);
+                          }
+                        });
                       })
                       .catch((error) => {
                         console.log('ERROR', error);
-                      })
+                      });
                   });
               })
               .catch((err) => {
                 console.log("Play services error", err.code, err.message);
-              })
-      }).catch(function(error){
-          loading.onLoad(false);
-          Alert.alert('Internet Connection not available');
-      });
-
+              });
+            }
+      else {
+        loading.onLoad(false);
+        Alert.alert('No Connection Available');
+      }
+    });
   }
 
   render() {

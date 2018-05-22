@@ -1,14 +1,11 @@
 /**for adding the records to the db */
 import { firebaseApp } from "../services/firebase";
 export const checkUser = (email,provider) => {
-       var firestore = firebaseApp.firestore(),
-             settings = { /* your settings... */
-                        timestampsInSnapshots: true
-                       },
-            userRefid,
-            data = [];
-       firestore.settings(settings);
-       return firestore.collection('users').where('Email', '==', email).where('Provider', '==', provider).get()
+         var userRefid,
+             data = [],
+             firestorm = firestormInit();
+ 
+       return firestorm.collection('users').where('Email', '==', email).where('Provider', '==', provider).get()
            .then(snapshot => {
                snapshot.forEach(doc => {
                    userRefid = doc.id;
@@ -18,19 +15,13 @@ export const checkUser = (email,provider) => {
                    userid: userRefid
                });
                return data;
-           }).catch(function (err) {
-               return err;
-           })
+           });
 };
 
 export const addUser = (name,email,accesstoken,photo,provider) =>{
-     var firestore = firebaseApp.firestore(),
-         settings = { /* your settings... */
-             timestampsInSnapshots: true
-         };
-         firestore.settings(settings);
 
-    return firestore.collection("users").add({
+    var firestorm = firestormInit();
+    return firestorm.collection("users").add({
             Name: name,
             Email: email,
             AccessToken: accesstoken,
@@ -44,4 +35,14 @@ export const addUser = (name,email,accesstoken,photo,provider) =>{
         .catch(function (error) {
             return null;
         });
-}
+};
+
+function firestormInit(){
+     var settings = { /* your settings... */
+             timestampsInSnapshots: true
+         },
+         firestorm = firebaseApp.firestore();
+         firestorm.settings(settings);
+         
+     return firestorm;
+ }

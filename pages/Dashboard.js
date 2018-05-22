@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator,TouchableHighlight} from 'react-native';
+import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator,TouchableHighlight,Text} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
 import { loading, screen,docRefId} from "../redux/actions/auth";
@@ -32,9 +32,16 @@ class Dashboard extends Component {
     componentWillReceiveProps(){
 
     }
+
    _onPressButton(){
        Alert-alert('User Ref Id: ' + this.props.getDocRefId);
    }
+
+   _calculate(e){
+       const {navigate} = this.props.navigation;
+       navigate('Calculator',{loading:false});
+   }
+   
      static navigationOptions = {
         header:null
      };
@@ -43,18 +50,25 @@ class Dashboard extends Component {
     var screenName = this.props.screenName;
     if ((this.props.isLoad && screenName == 'Dashboard') || screenName != 'Dashboard') {
       return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
-        <ActivityIndicator size = "large"/>
-         </View>
-      )
+                 <ActivityIndicator size = "large"/>
+               </View>
+            )
     } else if (!this.props.isLoad && screenName == 'Dashboard') {
         return (
             <View style={style.mainmenu}>
                 <View style={style.mainmenuDashboard}>
                     <Image source={require('../assets/elecmeter.png')} style={style.image} />
-                </View>
-                <Button onPress={(e) => this._onPressButton()} title="Doc Ref"/>
+                    <View style={{ margin: 7 }} />
+                    <Button onPress={(e) => this._onPressButton()} title="Doc Ref"/>
+               </View>
                  <View style={{ margin: 7 }} />
-                <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
+                 <TouchableHighlight style={style.childCard}  onPress = {(e) => this._calculate(e)}>
+                 <View>
+                 <Text> Calculate Unit </Text>
+                 </View>
+                </TouchableHighlight>   
+                 <View style={{ margin: 7 }} />
+                 <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
             </View>
         );
     }
