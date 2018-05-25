@@ -68,15 +68,15 @@ export default function reducer(state = defaultState, action){
              });
         case 'PREV-READING':
             return Object.assign({}, state, {
-                StorageCheck: action.previousReading
+                previousReading: action.previousReading
             });
         case 'PRES-READING':
             return Object.assign({}, state, {
-                StorageCheck: action.presentReading
+                presentReading: action.presentReading
             });
         case 'RATE':
             return Object.assign({}, state, {
-                StorageCheck: action.rate
+                rate: action.rate
             });
         case 'CALCULATE':
             return Object.assign({}, state, {

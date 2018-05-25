@@ -19,6 +19,7 @@ const userLogout = props => {
     props.onLoad(true);
     clearStorage();
     onGmLogout();
+    onfbLogout();
     props.navigation.dispatch(navigateAction);
  }
 

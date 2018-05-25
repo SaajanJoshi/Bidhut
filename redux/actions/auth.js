@@ -43,7 +43,7 @@ export const setPrevReading =(previousReading) =>{
 }
 
 export const setPresReading =(presentReading) =>{
-    return {type:'PREV-READING',previousReading:presentReading}
+    return {type:'PRES-READING',previousReading:presentReading}
 }
 
 export const setRate =(rate) =>{

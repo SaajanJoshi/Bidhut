@@ -12,7 +12,7 @@ export const onfbLogin = (provider) => {
 };
 
 export const onfbLogout = () =>{
-    FBLoginManager.logout((data) => {
-        console.log(data);
+    FBLoginManager.logout((data,err) => {
+
     })
 }
