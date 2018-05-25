@@ -18,7 +18,6 @@ const defaultState = {
 };
  
 export default function reducer(state = defaultState, action){
-    console.log(action);
     switch (action.type) {
         case 'LOGIN': 
             return Object.assign({}, state, { 
