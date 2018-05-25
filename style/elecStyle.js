@@ -1,5 +1,8 @@
 import { StyleSheet, Dimensions } from "react-native";
 
+const screenWidth = Dimensions.get("screen").width;
+const screenHeight = Dimensions.get("screen").height;
+
 export default StyleSheet.create({
   container: {
     borderRadius: 5
@@ -12,7 +15,7 @@ export default StyleSheet.create({
   },
   mainmenuDashboard: {
     height: 150,
-    width: screenWidth,
+    width: screenWidth-25,
     backgroundColor: "orange"
   },
   image: {
@@ -65,9 +68,9 @@ export default StyleSheet.create({
      paddingTop:10
   },
   imageCircle:{
-      width: 100,
-      height: 100,
-      borderRadius: 180,
+      width: 70,
+      height: 70,
+      borderRadius: 60,
       flex: 1
   },
   loading: {
@@ -82,9 +85,21 @@ export default StyleSheet.create({
   childCard:{
     backgroundColor: "coral",
     height: 150,
-    width: screenWidth
+    width: screenWidth-25,
+  },
+  floatBtn:{
+    flex: 1,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+    position:'relative',
+    marginTop: 50,
+    left:screenWidth - 100,
+    backgroundColor: '#fff',
+    borderRadius: 60
   }
 });
-
-const screenWidth = Dimensions.get("screen").width;
-const screenHeight = Dimensions.get("screen").height;

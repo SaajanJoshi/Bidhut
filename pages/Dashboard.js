@@ -6,73 +6,54 @@ import style from '../style/elecStyle';
 import { loading, screen,docRefId} from "../redux/actions/auth";
 import {onGmLogout} from "../dbConnection/googleLogin";
 import {onfbLogout} from "../dbConnection/facebookLogin";
-class Dashboard extends Component {
+import PropTypes from 'prop-types';
+import { NavigationActions } from 'react-navigation';
 
-   userLogout(e) {
-       const {navigate} = this.props.navigation;
-        this.props.onLogout();
-        this.props.onLoad(true);
-        clearStorage();
-        onGmLogout();
-        navigate('Login', this.props.onLoad(false));
-    }
+const userLogout = (props) => {
+     const navigateAction = NavigationActions.navigate({
+         routeName: 'Login',
+         params: {
+             loading: false
+         },
+     });
+     props.onLogout();
+     props.onLoad(false);
+     clearStorage();
+     onGmLogout();
+     props.navigation.dispatch(navigateAction);
+ }
 
-    componentDidMount(){
-          this.props.onScreen(this.props.navigation.state.routeName);
-          BackHandler.addEventListener("hardwareBackPress", () => { /*not feasible currently working but with more screen the functionality is not per witness*/
-                  BackHandler.exitApp();
-          });
-          this.props.onLoad(this.props.navigation.state.params.loading);
-    }
+const _calculate = (props) =>{
+    const navigateAction = NavigationActions.navigate({
+        routeName: 'Calculator',
+        params: {
+            loading: false
+        },
+    });
+    props.navigation.dispatch(navigateAction);
+}
 
-    componentWillmount(){
+const _onPressButton = props =>{
+    Alert.alert(props.getDocRefId);
+}
 
-    }
-
-    componentWillReceiveProps(){
-
-    }
-
-   _onPressButton(){
-       Alert-alert('User Ref Id: ' + this.props.getDocRefId);
-   }
-
-   _calculate(e){
-       const {navigate} = this.props.navigation;
-       navigate('Calculator',{loading:false});
-   }
-   
-     static navigationOptions = {
-        header:null
-     };
-
-    render() {
-    var screenName = this.props.screenName;
-    if ((this.props.isLoad && screenName == 'Dashboard') || screenName != 'Dashboard') {
-      return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
-                 <ActivityIndicator size = "large"/>
-               </View>
-            )
-    } else if (!this.props.isLoad && screenName == 'Dashboard') {
-        return (
-            <View style={style.mainmenu}>
+const Dashboard = props =>{
+    console.log("Dashboard: " + props.navigation.state.routeName);
+           return <View style={style.mainmenu}>
                 <View style={style.mainmenuDashboard}>
                     <Image source={require('../assets/elecmeter.png')} style={style.image} />
                     <View style={{ margin: 7 }} />
-                    <Button onPress={(e) => this._onPressButton()} title="Doc Ref"/>
+                    <Button onPress={(e) => _onPressButton(props)} title="Doc Ref"/>
                </View>
                  <View style={{ margin: 7 }} />
-                 <TouchableHighlight style={style.childCard}  onPress = {(e) => this._calculate(e)}>
+                 <TouchableHighlight style={style.childCard}  onPress = {() => _calculate(props)}>
                  <View>
                  <Text> Calculate Unit </Text>
                  </View>
                 </TouchableHighlight>   
                  <View style={{ margin: 7 }} />
-                 <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
+                 <Button onPress={(e) => userLogout(props)} title="Logout"/>
             </View>
-        );
-    }
-}
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -96,6 +77,14 @@ const mapDispatchToProps = (dispatch) => {
         }
     }
 }
+
+Dashboard.propTypes = {
+    navigation: PropTypes.object.isRequired
+};
+
+Dashboard.navigationOptions = {
+    header: null,
+};
 
  const clearStorage = async () => {
      try {

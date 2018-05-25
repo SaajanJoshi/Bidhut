@@ -3,112 +3,80 @@ import {connect} from 'react-redux';
 import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator,TouchableHighlight,Text,TextInput} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
-import { loading, screen,docRefId} from "../redux/actions/auth";
+import { loading, screen,docRefId,setPresReading,setPrevReading,setRate} from "../redux/actions/auth";
 import {onGmLogout} from "../dbConnection/googleLogin";
+import renderIf from "../services/renderIf";
 import {onfbLogout} from "../dbConnection/facebookLogin";
-class Calculator extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            previousValue:'',
-            presentValue:'',
-            rate:'',
-            calulatedValue:''
-        }
-    }
 
-     userLogout(e) {
-         const {
-             navigate
-         } = this.props.navigation;
-         this.props.onLogout();
-         this.props.onLoad(true);
-         clearStorage();
-         onGmLogout();
-         navigate('Login', this.props.onLoad(false));
-     }
+const userLogout = props => {
+    const navigateAction = NavigationActions.navigate({
+        routeName: 'Login',
+        params: {
+            loading: false
+        },
+    });
+    props.onLogout();
+    props.onLoad(true);
+    clearStorage();
+    onGmLogout();
+    props.navigation.dispatch(navigateAction);
+ }
 
-    calculate(e){
-        var prevVal =  parseFloat(this.state.previousValue),
-            presVal = parseFloat(this.state.presentValue),
-            rate = parseFloat(this.state.rate),
-            diff = presVal - prevVal,
-            amount = diff * rate;
+const calculate = (props) => {
+    var prevVal = parseFloat(props.getPreviousReading),
+        presVal = parseFloat(props.getPresentReading),
+        rate = parseFloat(props.getRate),
+        diff = presVal - prevVal,
+        amount = diff * rate;
+    props.setCalculateValue(amount.toString());
+}
 
-            this.setState({
-                calulatedValue:amount.toString()
-            })
-    }
-
-    componentDidMount(){
-         this.props.onScreen(this.props.navigation.state.routeName);
-         this.props.onLoad(this.props.navigation.state.params.loading);
-    }
-
-    componentWillmount(){
-
-    }
-
-    componentWillReceiveProps(){
-
-    }
-
-  
-     static navigationOptions = {
-        header:null
-     };
-
-    render() {
-    var screenName = this.props.screenName;
-    if ((this.props.isLoad && screenName == 'Calculator') || screenName != 'Calculator') {
-      return ( <View style={{ position: "absolute",left: 0,right: 0,top: 0,bottom: 0,alignItems: "center",justifyContent: "center"}}>
-                 <ActivityIndicator size = "large"/>
-               </View>
-            )
-    } else if (!this.props.isLoad && screenName == 'Calculator') {
+const Calculator = props =>{
         return (
             <View style={style.mainmenu}>
                 <TextInput
                         placeholder = "Present Reading"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) => this.setState({presentValue:text})}
+                        onChangeText={(text) => {props.setPresReading(text)}}
                         keyboardType = 'numeric'
-                        value={this.state.presentValue}
+                        value={props.getPresentReading}
                         /> 
                 <View style={{ margin: 7 }} />
                 <TextInput
                         placeholder = "Previous Reading"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) => this.setState({previousValue:text})}
+                        onChangeText={(text) => {props.setPrevReading(text)}}
                         keyboardType = 'numeric'
-                        value={this.state.previousValue}
+                        value={props.getPreviousReading}
                         /> 
                 <View style={{ margin: 7 }} />
                  <TextInput
                         placeholder = "Rate"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) => this.setState({rate:text})}
+                        onChangeText={(text) =>{props.setRate(text)}}
                         keyboardType = 'numeric'
-                        value={this.state.rate}
+                        value={props.getRate}
                         />
                 <View style={{ margin: 13 }} />
-                    <Text> The amount is : {this.state.calulatedValue}</Text>
+                    <Text> The amount is : {props.getCalculateValue}</Text>
                 <View style={{ margin: 18 }} />        
-                <Button onPress={(e) => this.calculate(e)} title="Calculate"/>
+                <Button onPress={(e) => calculate(props)} title="Calculate"/>
                 <View style={{ margin: 7 }} />
-                <Button onPress={(e) => this.userLogout(e)} title="Logout"/>
-  
+                {renderIf(props.isLoggedIn, <Button onPress={() => userLogout(props)} title="Logout"/>)}
             </View>
         );
-    }
-}
 }
 
 const mapStateToProps = (state, ownProps) => {
     return {username: state.auth.username,
             isLoad:state.auth.isLoad,
             screenName: state.auth.screenName,
-            getDocRefId: state.auth.docRefId
+            getDocRefId: state.auth.docRefId,
+            isLoggedIn: state.auth.isLoggedIn,
+            getPreviousReading:state.auth.previousReading,
+            getPresentReading:state.auth.presentReading,
+            getRate:state.auth.rate,
+            getCalculateValue:state.auth.calculateValue
          };
 }
 
@@ -122,6 +90,18 @@ const mapDispatchToProps = (dispatch) => {
         },
         onScreen: (screenName) => {
             dispatch(screen(screenName));
+        },
+        setPrevReading:(previousReading) =>{
+            dispatch(setPrevReading(previousReading));
+        },
+        setPresReading:(presentReading) =>{
+            dispatch(setPresReading(presentReading));
+        },
+        setRate:(rate) =>{
+             dispatch(setRate(rate));
+        },
+        setCalculateValue:(calculateValue) =>{
+             dispatch(setCalculateValue(calculateValue));
         }
     }
 }
@@ -133,5 +113,9 @@ const mapDispatchToProps = (dispatch) => {
          console.log(error);
      }
  }
+
+ Calculator.navigationOptions = {
+     header: null,
+ };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calculator);

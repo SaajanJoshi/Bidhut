@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import RootNavigation from '../navigation/RootNavigation';
-import Dashboard from '../pages/Dashboard';
+import AppWithNavigationState from '../navigation/AppNavigation';
 
-  class Application extends Component {
+class Application extends Component {
       render() {
-          return <RootNavigation/> ;
+          return <AppWithNavigationState/> ;
       }
-  }
+}
 
 const mapStateToProps = (state, ownProps) => {
     return {isLoggedIn: state.auth.isLoggedIn,
