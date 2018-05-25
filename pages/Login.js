@@ -47,6 +47,7 @@ import { NavigationActions } from 'react-navigation';
                 });
               props.onLogin(props.getUsername, props.getPassword);
               props.navigation.dispatch(navigateAction);
+            
             })
             .catch(function(error) {
               Alert.alert(error.message);

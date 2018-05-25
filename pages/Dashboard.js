@@ -39,7 +39,6 @@ const _onPressButton = props =>{
 }
 
 const Dashboard = props =>{
-    console.log("Dashboard: " + props.navigation.state.routeName);
            return <View style={style.mainmenu}>
                 <View style={style.mainmenuDashboard}>
                     <Image source={require('../assets/elecmeter.png')} style={style.image} />
