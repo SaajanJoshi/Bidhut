@@ -37,25 +37,25 @@ const Calculator = props =>{
                 <TextInput
                         placeholder = "Present Reading"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) => {props.setPresReading(text)}}
                         keyboardType = 'numeric'
                         value={props.getPresentReading}
+                        onChangeText={(text) => props.setPresReading(text)}
                         /> 
                 <View style={{ margin: 7 }} />
                 <TextInput
                         placeholder = "Previous Reading"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) => {props.setPrevReading(text)}}
                         keyboardType = 'numeric'
                         value={props.getPreviousReading}
+                        onChangeText={(text) => props.setPrevReading(text)}
                         /> 
                 <View style={{ margin: 7 }} />
                  <TextInput
                         placeholder = "Rate"
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                        onChangeText={(text) =>{props.setRate(text)}}
                         keyboardType = 'numeric'
                         value={props.getRate}
+                         onChangeText={(text) =>props.setRate(text)}
                         />
                 <View style={{ margin: 13 }} />
                     <Text> The amount is : {props.getCalculateValue}</Text>

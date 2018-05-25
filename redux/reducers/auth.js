@@ -14,7 +14,7 @@ const defaultState = {
     previousReading: '',
     presentReading: '',
     rate: '',
-    calculateValue:''
+    calculateValue:'0'
 };
  
 export default function reducer(state = defaultState, action){
