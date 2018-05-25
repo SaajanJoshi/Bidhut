@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {View, Button,Alert, Image, AsyncStorage, BackHandler, ActivityIndicator,TouchableHighlight,Text,TextInput} from 'react-native';
 import {logout} from '../redux/actions/auth';
 import style from '../style/elecStyle';
-import { loading, screen,docRefId,setPresReading,setPrevReading,setRate} from "../redux/actions/auth";
+import { loading, screen,docRefId,setPresReading,setPrevReading,setRate,setCalculateValue} from "../redux/actions/auth";
 import {onGmLogout} from "../dbConnection/googleLogin";
 import renderIf from "../services/renderIf";
 import {onfbLogout} from "../dbConnection/facebookLogin";
